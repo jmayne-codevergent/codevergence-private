@@ -5,6 +5,13 @@ on:
     branches:
       - '**'  # Run on PRs from any branch
   workflow_dispatch:  # This allows the workflow to be manually triggered
+    inputs:
+      repo_path_a:
+        description: 'First repository path (e.g. org/repo-a)'
+        required: true
+      repo_path_b:
+        description: 'Second repository path (e.g. org/repo-b)'
+        required: true
 
 jobs:
   compare:
@@ -14,7 +21,7 @@ jobs:
       - name: Checkout Repo A
         uses: actions/checkout@v4
         with:
-          repository: jmayne-codevergent/codevergence-private  # Replace with your actual repository name
+          repository: ${{ inputs.repo_path_a }} #jmayne-codevergent/codevergence-private  # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-a
 
@@ -22,7 +29,7 @@ jobs:
       - name: Checkout Repo B
         uses: actions/checkout@v4
         with:
-          repository: jmayne-codevergent/codevergence-public  # Replace with your actual repository name
+          repository: ${{ inputs.repo_path_b }} #jmayne-codevergent/codevergence-public  # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-b
 

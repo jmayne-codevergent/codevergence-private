@@ -1,0 +1,30 @@
+name: Compare Two Repositories
+
+on:
+  workflow_dispatch:  # This allows the workflow to be manually triggered
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout Repository A
+      - name: Checkout Repo A
+        uses: actions/checkout@v4
+        with:
+          repository: your-org/repo-a  # Replace with your actual repository name
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: repo-a
+
+      # Step 2: Checkout Repository B
+      - name: Checkout Repo B
+        uses: actions/checkout@v4
+        with:
+          repository: your-org/repo-b  # Replace with your actual repository name
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: repo-b
+
+      # Step 3: Compare the two repositories using diff
+      - name: Compare Repos
+        run: |
+          echo "Comparing repo-a with repo-b..."
+          diff -rq repo-a/ repo-b/ || true

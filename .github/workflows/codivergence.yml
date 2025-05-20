@@ -31,3 +31,47 @@ jobs:
         run: |
           echo "Comparing repo-a with repo-b..."
           diff -rq repo-a/ repo-b/ || true
+
+      # Step 4: Produce output
+      - name: Compare Repos through shell
+        run: |
+          REPO1="repo-a"
+          REPO2="repo-b"
+          
+        
+          if [ ! -d "$REPO1/.git" ]; then
+              echo "Error: $REPO1 is not a valid git repository"
+              exit 1
+          fi
+          
+          if [ ! -d "$REPO2/.git" ]; then
+              echo "Error: $REPO2 is not a valid git repository"
+              exit 1
+          fi
+          
+          # Get commit hashes
+          COMMITS1=$(git -C "$REPO1" log --pretty=format:'%H')
+          COMMITS2=$(git -C "$REPO2" log --pretty=format:'%H')
+          
+          # Convert to arrays
+          mapfile -t ARRAY1 <<< "$COMMITS1"
+          mapfile -t ARRAY2 <<< "$COMMITS2"
+          
+          echo "Commits in $REPO1 but not in $REPO2:"
+          for commit in "${ARRAY1[@]}"; do
+            if ! grep -Fxq "$commit" <<< "${COMMITS2}"; then
+              echo "$commit"
+            fi
+          done
+          
+          echo "Nunmber of commits in repoa but not repoB :${#ARRAY1[@]}"
+          
+          echo
+          echo "Commits in $REPO2 but not in $REPO1:"
+          for commit in "${ARRAY2[@]}"; do
+            if ! grep -Fxq "$commit" <<< "${COMMITS1}"; then
+              echo "$commit"
+            fi
+          done
+          
+          echo "Nunmber of commits in repoB but not repoA :${#ARRAY2[@]}"

@@ -1,6 +1,9 @@
 name: Compare Two Repositories
 
 on:
+  pull_request:
+    branches:
+      - '**'  # Run on PRs from any branch
   workflow_dispatch:  # This allows the workflow to be manually triggered
 
 jobs:

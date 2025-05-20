@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repo A
         uses: actions/checkout@v4
         with:
-          repository: your-org/repo-a  # Replace with your actual repository name
+          repository: jmayne-codevergent/codevergence-private  # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-a
 
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Repo B
         uses: actions/checkout@v4
         with:
-          repository: your-org/repo-b  # Replace with your actual repository name
+          repository: jmayne-codevergent/codevergence-public  # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-b
 

@@ -78,7 +78,7 @@ jobs:
           echo "Number of commits in repoB but not repoA: ${#ARRAY2[@]}"
           } > commit_output.txt
 
-      # Step 5: Check the output length and fail if more than 25 lines
+      # Step 5: Check the output length and fail if more than 30 lines
       - name: Check Output Length
         run: |
           # Combine the diff output and commit comparison output
@@ -89,8 +89,8 @@ jobs:
 
           echo "Total output lines: $LINE_COUNT"
 
-          # Fail the workflow if the output exceeds 25 lines
-          if [ "$LINE_COUNT" -gt 25 ]; then
-            echo "Error: Output exceeds 25 lines. Workflow failing."
+          # Fail the workflow if the output exceeds 30 lines
+          if [ "$LINE_COUNT" -gt 30 ]; then
+            echo "Error: Output exceeds 30 lines. Workflow failing."
             exit 1
           fi

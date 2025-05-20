@@ -30,11 +30,13 @@ jobs:
       - name: Compare Repos
         run: |
           echo "Comparing repo-a with repo-b..."
-          diff -rq repo-a/ repo-b/ || true > diff_output.txt
+          (diff -rq repo-a/ repo-b/ || true) > diff_output.txt
+
 
       # Step 4: Produce output (commit comparison)
       - name: Compare Repos through shell
         run: |
+          {
           REPO1="repo-a"
           REPO2="repo-b"
           
@@ -63,7 +65,7 @@ jobs:
             fi
           done
           
-          echo "Nunmber of commits in repoA but not repoB :${#ARRAY1[@]}"
+          echo "Number of commits in repoA but not repoB: ${#ARRAY1[@]}"
           
           echo
           echo "Commits in $REPO2 but not in $REPO1:"
@@ -73,7 +75,8 @@ jobs:
             fi
           done
           
-          echo "Nunmber of commits in repoB but not repoA :${#ARRAY2[@]}" > commit_output.txt
+          echo "Number of commits in repoB but not repoA: ${#ARRAY2[@]}"
+          } > commit_output.txt
 
       # Step 5: Check the output length and fail if more than 25 lines
       - name: Check Output Length

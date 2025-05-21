@@ -36,6 +36,7 @@ jobs:
         run: |
           echo "Comparing repo-a with repo-b..."
           (diff -rq repo-a/ repo-b/ || true) > diff_output.txt
+          echo diff_output.txt
 
 
       # Step 4: Produce output (commit comparison)
@@ -82,6 +83,8 @@ jobs:
           
           echo "Number of commits in repoB but not repoA: ${#ARRAY2[@]}"
           } > commit_output.txt
+
+          echo commit_output.txt
 
       # Step 5: Check the output length and fail if more than 30 lines
       - name: Check Output Length

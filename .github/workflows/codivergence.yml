@@ -95,18 +95,27 @@ jobs:
           cat commit_output.txt
 
       # Step 5: Check the output length and fail if more than 30 lines
-      - name: Check Output Length
+      - name: Check Output Length and Notify Slack if Failed
         run: |
           THRESHOLD=${{ github.event.inputs.line_threshold || 30 }}
-      
           TOTAL_OUTPUT=$(cat diff_output.txt commit_output.txt)
-      
           LINE_COUNT=$(echo "$TOTAL_OUTPUT" | wc -l)
-      
+
           echo "Total output lines: $LINE_COUNT"
           echo "Threshold: $THRESHOLD"
-      
+
           if [ "$LINE_COUNT" -gt "$THRESHOLD" ]; then
-            echo "Error: Output exceeds $THRESHOLD lines. Workflow failing."
+            echo "Error: Output exceeds $THRESHOLD lines. Sending Slack alert..."
+            
+            PAYLOAD=$(jq -n \
+              --arg text ":warning: *GitHub Workflow Failed*: Output exceeded threshold of $THRESHOLD lines on \`${{ github.repository }}\`.\n*PR:* ${{ github.event.pull_request.html_url || 'N/A' }}\n*Lines:* $LINE_COUNT" \
+              '{text: $text}')
+
+            curl -X POST -H 'Content-type: application/json' \
+              --data "$PAYLOAD" \
+              ${{ secrets.SLACK_WEBHOOK_URL }}
+            
             exit 1
           fi
+        shell: bash
+

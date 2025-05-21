@@ -37,15 +37,16 @@ jobs:
       - name: Compare Repos
         run: |
           echo "Comparing repo-a with repo-b..."
-          diff -rq repo-a/ repo-b/ || true
+          (diff -rq repo-a/ repo-b/ || true) > diff_output.txt
 
-      # Step 4: Produce output
+
+      # Step 4: Produce output (commit comparison)
       - name: Compare Repos through shell
         run: |
+          {
           REPO1="repo-a"
           REPO2="repo-b"
           
-        
           if [ ! -d "$REPO1/.git" ]; then
               echo "Error: $REPO1 is not a valid git repository"
               exit 1
@@ -71,7 +72,7 @@ jobs:
             fi
           done
           
-          echo "Nunmber of commits in repoa but not repoB :${#ARRAY1[@]}"
+          echo "Number of commits in repoA but not repoB: ${#ARRAY1[@]}"
           
           echo
           echo "Commits in $REPO2 but not in $REPO1:"
@@ -81,4 +82,22 @@ jobs:
             fi
           done
           
-          echo "Nunmber of commits in repoB but not repoA :${#ARRAY2[@]}"
+          echo "Number of commits in repoB but not repoA: ${#ARRAY2[@]}"
+          } > commit_output.txt
+
+      # Step 5: Check the output length and fail if more than 30 lines
+      - name: Check Output Length
+        run: |
+          # Combine the diff output and commit comparison output
+          TOTAL_OUTPUT=$(cat diff_output.txt commit_output.txt)
+
+          # Count the number of lines
+          LINE_COUNT=$(echo "$TOTAL_OUTPUT" | wc -l)
+
+          echo "Total output lines: $LINE_COUNT"
+
+          # Fail the workflow if the output exceeds 30 lines
+          if [ "$LINE_COUNT" -gt 30 ]; then
+            echo "Error: Output exceeds 30 lines. Workflow failing."
+            exit 1
+          fi

@@ -14,6 +14,10 @@ on:
         description: 'Second repository path (e.g. org/repo-b)'
         required: true
         default: jmayne-codevergent/codevergence-public
+      line_threshold:
+        description: 'Maximum number of output lines before failing'
+        required: false
+        default: '30'
 
 jobs:
   compare:
@@ -90,16 +94,16 @@ jobs:
       # Step 5: Check the output length and fail if more than 30 lines
       - name: Check Output Length
         run: |
-          # Combine the diff output and commit comparison output
+          THRESHOLD=${{ github.event.inputs.line_threshold || 30 }}
+      
           TOTAL_OUTPUT=$(cat diff_output.txt commit_output.txt)
-
-          # Count the number of lines
+      
           LINE_COUNT=$(echo "$TOTAL_OUTPUT" | wc -l)
-
+      
           echo "Total output lines: $LINE_COUNT"
-
-          # Fail the workflow if the output exceeds 30 lines
-          if [ "$LINE_COUNT" -gt 30 ]; then
-            echo "Error: Output exceeds 30 lines. Workflow failing."
+          echo "Threshold: $THRESHOLD"
+      
+          if [ "$LINE_COUNT" -gt "$THRESHOLD" ]; then
+            echo "Error: Output exceeds $THRESHOLD lines. Workflow failing."
             exit 1
           fi

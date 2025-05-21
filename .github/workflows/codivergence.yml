@@ -30,6 +30,7 @@ jobs:
           repository: ${{ inputs.repo_path_a || 'jmayne-codevergent/codevergence-private' }} # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-a
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
       # Step 2: Checkout Repository B
       - name: Checkout Repo B
@@ -38,6 +39,7 @@ jobs:
           repository: ${{ inputs.repo_path_b || 'jmayne-codevergent/codevergence-public' }} # Replace with your actual repository name
           token: ${{ secrets.GITHUB_TOKEN }}
           path: repo-b
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
       # Step 3: Compare the two repositories using diff
       - name: Compare Repos

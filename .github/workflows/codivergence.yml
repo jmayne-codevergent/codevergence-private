@@ -109,9 +109,8 @@ jobs:
           if [ "$LINE_COUNT" -gt "$THRESHOLD" ]; then
             echo "Error: Output exceeds $THRESHOLD lines. Sending Slack alert..."
             
-            PAYLOAD=$(jq -n \
-              --arg text ":warning: *GitHub Workflow Failed*: Output exceeded threshold of $THRESHOLD lines on \`${{ github.repository }}\`.\\n*PR:* ${{ github.event.pull_request.html_url || 'N/A' }}\\n*Lines:* $LINE_COUNT" \
-              '{text: $text}')
+            MESSAGE=$":warning: *GitHub Workflow Failed*: Output exceeded threshold of $THRESHOLD lines on \`${{ github.repository }}\`.\n*PR:* ${{ github.event.pull_request.html_url || 'N/A' }}\n*Lines:* $LINE_COUNT"
+            PAYLOAD=$(jq -n --arg text "$MESSAGE" '{text: $text}')
 
             curl -X POST -H 'Content-type: application/json' \
               --data "$PAYLOAD" \
